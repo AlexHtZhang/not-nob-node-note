@@ -2,19 +2,28 @@ console.log('starting notes.js');
 
 const fs = require('fs');
 
+var fetchNotes = () => {
+
+	try {
+	  	var notesString = fs.readFileSync('notes-data.json');
+		return JSON.parse(notesString);
+	} catch (e) {
+		// don't have to wirte anythig here. the error will be catched and the file will be created.
+	}
+
+};
+
+var saveNotes = (notes) => {
+	fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+};
+
 var addNote = (title, body) => {
-	var notes = [];
+	var notes = fetchNotes();
 	var note = {
 		title,
 		body
 	};
 
-	try {
-	  	var notesString = fs.readFileSync('notes-data.json');
-		notes = JSON.parse(notesString);
-	} catch (e) {
-		// don't have to wirte anythig here. the error will be catched and the file will be created.
-	}
 
 	// arror function no need for return. it will auto return the expresion.
 	var duplicateNotes = notes.filter((note) => note.title === title);
@@ -24,7 +33,7 @@ var addNote = (title, body) => {
 
 	if (duplicateNotes.length === 0) {
 		notes.push(note);
-		fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+		saveNotes(notes);
 	}
 
 };
